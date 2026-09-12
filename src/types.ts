@@ -1,12 +1,20 @@
 // ===== Bridge Core Types =====
 
-export type MessageSource = "claude" | "codex";
+// "room" tags cross-machine room-event notices injected by the daemon's room
+// bridge. It is a CHANNEL-attribution source only (renders as user="Room",
+// distinct from the trusted local "codex" partner) — it never participates in
+// the Claude→Codex reply/forward paths, so the source-never-forwarded invariant
+// is unchanged.
+export type MessageSource = "claude" | "codex" | "room";
 
 export interface BridgeMessage {
   id: string;
   source: MessageSource;
   content: string;
   timestamp: number;
+  /** App-server attribution used to prevent room-originated turns entering the local relay. */
+  threadId?: string;
+  turnId?: string;
   /**
    * Stable budget-resume correlation id (PR4, additive). Present ONLY on Claude
    * channel resume pushes (system_budget_resume directives). When set, the

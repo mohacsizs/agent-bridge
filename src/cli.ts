@@ -119,6 +119,27 @@ async function main(command: string | undefined, restArgs: string[]) {
       const { runLogs } = await import("./cli/logs");
       await runLogs(restArgs);
       break;
+    case "auth":
+      const { runAuth } = await import("./cli/auth");
+      await runAuth(restArgs);
+      break;
+    case "broker":
+      const { runBroker } = await import("./cli/broker");
+      await runBroker(restArgs);
+      break;
+    case "room":
+      const { runRoom } = await import("./cli/room");
+      await runRoom(restArgs);
+      break;
+    case "join":
+      const { runJoin } = await import("./cli/room");
+      await runJoin(restArgs);
+      break;
+    case "publish":
+    case "announce":
+      const { runPublish } = await import("./cli/publish");
+      await runPublish(restArgs);
+      break;
     case "--help":
     case "-h":
     case undefined:
@@ -163,6 +184,39 @@ Commands:
   doctor [--json]    Diagnose env, daemon, build drift, logs, and current thread
   doctor resume-pollution [--apply]  Find/fix old AgentBridge kickoff metadata
   budget [--json]    Show both agents' subscription quota snapshot (5h/weekly, drift, pause state)
+  auth issue --id <email|github> --name <displayName>
+                     On the broker: issue a PSK token for someone else and PRINT it (carry it
+                     out-of-band; does not touch <state>/auth-token)
+  auth login --token <PSK>
+                     On the edge: install a broker-issued token to <state>/auth-token (0600)
+  auth login --id <email|github> --name <displayName>
+                     Self-sign a token locally (single-machine case) and write it (0600)
+  auth revoke --id <email|github>
+                     On the broker: revoke all of an identity's tokens (old tokens can't reconnect).
+                     Pair with "room remove" to evict a live session
+  room create <name> [--password <pw> | --password-stdin] | room list
+                     Create a collaboration room (id = slugified name) or list rooms. With a
+                     password, members can self-join via "abg join <id> --password <pw>"
+  room invite <roomId> <identityId> [--name <displayName>] [--broker-url <ws://…>]
+                     On the broker: issue a token + grant membership + print the invitee's
+                     full join commands (one-shot cross-network onboarding). Pass the routable
+                     --broker-url from "abg broker start"'s card so the invitee can actually reach you
+  room set-password <roomId> (--password <pw> | --password-stdin | --clear)
+                     On the broker: set/clear a room's self-service-join password (members only)
+  room add <roomId> <identityId> | room remove <roomId> <identityId>
+                     On the broker: directly grant/revoke a member (members only). "remove"
+                     pairs with "auth revoke" to evict a live session
+  join <roomId> [--password <pw> | --password-stdin] [--broker-url <ws://…>]
+                     Join a room and auto-join this directory next time (§2.4). For a remote
+                     room (no local record) it maps the cwd; the broker enforces membership.
+                     With a password, self-join a password-protected room (broker grants membership).
+                     --broker-url is persisted so "agentbridge claude" auto-connects (no
+                     AGENTBRIDGE_BROKER_URL env var needed).
+                     Prefer --password-stdin (e.g. "echo pw | abg join r --password-stdin"): a
+                     password on argv leaks via ps / shell history
+  broker start [--host <ip>] [--port <n>] [--db <path>] [--web-port <n>] [--no-web] [--no-open]
+                     Run the always-on control-plane broker (§11.1) + a loopback-only
+                     admin dashboard (view rooms/members/whiteboards + create a room)
   logs [--codex] [-f] [-n N]
                      Tail this pair's daemon log (or the codex wrapper log with
                      --codex). -n N: last N lines (default 100). -f: follow/stream.

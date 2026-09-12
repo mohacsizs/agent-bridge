@@ -72,11 +72,13 @@ Net effect: each side receives a curated stream of meaningful messages, so conte
 
 ## Prerequisites
 
-| Dependency | Version | Install |
+| Dependency | Recommended version | Install |
 |-----------|---------|---------|
 | [Bun](https://bun.sh) | v1.3.11+ | `curl -fsSL https://bun.sh/install \| bash` |
-| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | v2.1.80+ | `npm install -g @anthropic-ai/claude-code` |
-| [Codex CLI](https://github.com/openai/codex) | latest | `npm install -g @openai/codex` |
+| [Claude Code](https://code.claude.com/docs/en/quickstart) | 2.1.269 | `npm install -g @anthropic-ai/claude-code@2.1.269` |
+| [Codex CLI](https://developers.openai.com/codex/cli) | 0.154.0 | `npm install -g @openai/codex@0.154.0` |
+
+Claude Code and Codex recommendations are the publishers' latest stable npm versions checked on 2026-09-12. These recommendations do not change the existing minimum-version checks. Cross-machine Codex messaging, acknowledgements and daemon/session recovery were also verified with Codex 0.153.4. For room setup and the one-time `--new` step after upgrading, see [Codex remote rooms](docs/CODEX-ROOMS.md).
 
 > **Bun is required** as the runtime for the AgentBridge daemon and plugin server. Node.js alone is not enough. If `abg` installs but won't run, install Bun first (see [Troubleshooting](docs/TROUBLESHOOTING.md)).
 
@@ -170,7 +172,7 @@ agentbridge codex   # (another terminal) Start Codex TUI connected to the bridge
 
 ### Cross-network collaboration *(v3 preview)*
 
-The v3 collaboration layer (shared rooms across machines/agents over a broker: `auth`, `broker`, `room`, `join`, `publish`) is in preview on the [`integration/v3-all`](https://github.com/raysonmeng/agent-bridge/tree/integration/v3-all) branch and lands here with v3. Spec: [docs/09-v3协作系统规格.md](docs/09-v3协作系统规格.md).
+The v3 collaboration layer ships in **0.1.31**: shared rooms across machines over a broker, with `auth`, `broker`, `room`, `join` and `publish` commands. Codex-only machines can use native room tools to exchange messages and acknowledgements. See [Codex remote rooms](docs/CODEX-ROOMS.md) for setup and delivery limits, and the [user manual](docs/manual/manual-en.md) for broker and membership administration.
 
 The pair-aware commands (`claude`, `codex`, `resume`, `kill`, `doctor`, `budget`, `logs`) accept `--pair <name>` to target a specific pair; one pair per project directory by default, with ports allocated per pair in +10 strides from 4500.
 
@@ -293,12 +295,12 @@ For dormant/disabled bridge states, the Codex `.git` restriction, and other gotc
 - **More adapters** — AgentBridge wires Claude Code ↔ Codex today. Candidates for the next agent: **OpenCode, OpenClaw, Hermes Agent, Gemini CLI**. Vote in the [adapter roadmap issue](https://github.com/raysonmeng/agent-bridge/issues/212).
 - **Capability mesh** — beyond messaging: connected agents will publish their commands / skills / MCP tools so a peer can invoke them directly, moving from messaging to capability invocation.
 - **v2 — multi-agent foundation** (partly landed): room-scoped collaboration, stable identity, a formal control protocol, stronger recovery. See [docs/08-v2架构愿景.md](docs/08-v2架构愿景.md).
-- **v3 — cross-network collaboration** (preview on the [`integration/v3-all`](https://github.com/raysonmeng/agent-bridge/tree/integration/v3-all) branch): shared rooms across machines and agents over a broker. See [docs/09-v3协作系统规格.md](docs/09-v3协作系统规格.md).
+- **v3 — cross-network collaboration** (included in 0.1.31, experimental): shared rooms across machines and agents over a broker. See [Codex remote rooms](docs/CODEX-ROOMS.md).
 
 ## Docs
 
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** — disabled-state recovery, the Codex `.git` hang, "installed but won't run", Bun version requirements
-- **[User manual (EN)](https://github.com/raysonmeng/agent-bridge/blob/integration/v3-all/docs/manual/manual-en.md)** — end-to-end usage walkthrough
+- **[User manual (EN)](docs/manual/manual-en.md)** — end-to-end usage walkthrough
 - **[Project growth timeline](docs/README.md)** — how AgentBridge was built, stage by stage (01–11)
 
 ## How This Project Was Built

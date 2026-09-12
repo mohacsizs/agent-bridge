@@ -24,6 +24,7 @@ const REQUIRED_ARTIFACTS = Object.freeze([
   "plugins/agentbridge/hooks/hooks.json",
   "plugins/agentbridge/scripts/health-check.sh",
   "plugins/agentbridge/scripts/plugin-update-notice.mjs",
+  "plugins/agentbridge/scripts/publish-completion.sh",
   "plugins/agentbridge/server/bridge-server.js",
   "plugins/agentbridge/server/daemon.js",
   "package.json",
@@ -119,7 +120,7 @@ function verifyBuiltArtifacts() {
     }
     const stat = statSync(absolute);
     if (stat.size <= 0) empty.push(rel);
-    if (binTargets.has(rel) && (stat.mode & 0o111) === 0) {
+    if (process.platform !== "win32" && binTargets.has(rel) && (stat.mode & 0o111) === 0) {
       notExecutable.push(rel);
     }
   }

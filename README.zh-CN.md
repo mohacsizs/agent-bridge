@@ -72,11 +72,13 @@ English version: [README.md](README.md)
 
 ## 前置条件
 
-| 依赖 | 版本 | 安装方式 |
+| 依赖 | 推荐版本 | 安装方式 |
 |------|------|----------|
 | [Bun](https://bun.sh) | v1.3.11+ | `curl -fsSL https://bun.sh/install \| bash` |
-| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | v2.1.80+ | `npm install -g @anthropic-ai/claude-code` |
-| [Codex CLI](https://github.com/openai/codex) | latest | `npm install -g @openai/codex` |
+| [Claude Code](https://code.claude.com/docs/en/quickstart) | 2.1.269 | `npm install -g @anthropic-ai/claude-code@2.1.269` |
+| [Codex CLI](https://developers.openai.com/codex/cli) | 0.154.0 | `npm install -g @openai/codex@0.154.0` |
+
+以上 Claude Code、Codex 推荐值来自发布方 npm 的最新稳定版，核对日期为 2026-09-12；不改变现有最低版本检查。Codex 0.153.4 也已通过双机消息、ACK 和 daemon/会话恢复验证。房间配置及升级后首次使用 `--new` 的说明见 [Codex 跨机房间](docs/CODEX-ROOMS.md)。
 
 > **Bun 是必要运行时**（AgentBridge daemon 和插件服务器都跑在 Bun 上），仅有 Node.js 不够。如果 `abg` 装上了却跑不起来，八成就是缺 Bun（见 [排错](docs/TROUBLESHOOTING.md)）。
 
@@ -170,7 +172,7 @@ agentbridge codex   # （另一个终端）启动 Codex TUI 连接 Bridge
 
 ### 跨网协作 *(v3 预览)*
 
-v3 协作层(跨机器/跨 agent 的共享房间,含 `auth` / `broker` / `room` / `join` / `publish` 命令)目前在 [`integration/v3-all`](https://github.com/raysonmeng/agent-bridge/tree/integration/v3-all) 分支预览,将随 v3 落地本分支。规格见 [docs/09-v3协作系统规格.md](docs/09-v3协作系统规格.md)。
+v3 协作层随 **0.1.31** 发布：通过 broker 连接跨机器共享房间，提供 `auth` / `broker` / `room` / `join` / `publish` 命令。只有 Codex 的机器也能通过原生房间工具收发消息和 ACK。配置方法及投递边界见 [Codex 跨机房间](docs/CODEX-ROOMS.md)，broker 和成员管理见 [使用手册](docs/manual/使用手册.md)。
 
 成对命令（`claude`、`codex`、`resume`、`kill`、`doctor`、`budget`、`logs`）接受 `--pair <name>` 指定具体的对；默认每个项目目录一对，端口按 +10 步长从 4500 分配。
 
@@ -293,12 +295,12 @@ AgentBridge 能让长任务跨订阅额度窗口持续推进，而不是某一�
 - **更多 adapter**：今天 AgentBridge 接的是 Claude Code ↔ Codex。下一个候选：**OpenCode、OpenClaw、Hermes Agent、Gemini CLI**。到 [adapter roadmap issue](https://github.com/raysonmeng/agent-bridge/issues/212) 投票。
 - **能力网格（Capability mesh）**：超越消息传递：连上的 agent 会发布自己的命令 / skills / MCP tools，让对等体直接调用，从「传消息」走向「调能力」。
 - **v2：多 Agent 基础设施**（部分已落地）：Room 作用域协作、稳定身份、正式控制协议、更强恢复。见 [docs/08-v2架构愿景.md](docs/08-v2架构愿景.md)。
-- **v3：跨网协作**（preview，见上面的实验性 CLI）：跨机器、跨 agent 的共享房间，经 broker。见 [docs/09-v3协作系统规格.md](docs/09-v3协作系统规格.md)。
+- **v3：跨网协作**（已包含于 0.1.31，实验性）：跨机器、跨 agent 的共享房间，经 broker。见 [Codex 跨机房间](docs/CODEX-ROOMS.md)。
 
 ## 文档
 
 - **[排错 / Troubleshooting](docs/TROUBLESHOOTING.md)**：禁用状态恢复、Codex `.git` 挂死、「装了却跑不起来」、Bun 版本要求
-- **[使用手册](https://github.com/raysonmeng/agent-bridge/blob/integration/v3-all/docs/manual/使用手册.md)**（[English](https://github.com/raysonmeng/agent-bridge/blob/integration/v3-all/docs/manual/manual-en.md)）：端到端使用走查
+- **[使用手册](docs/manual/使用手册.md)**（[English](docs/manual/manual-en.md)）：端到端使用走查
 - **[项目成长编年史](docs/README.md)**：AgentBridge 是怎么一步步长起来的（阶段 01–11）
 
 ## 这个项目是怎么建成的
